@@ -45,7 +45,7 @@ bool playingBoard::checkForWin(int x, int y)
     return false;
 }
 
-void playingBoard::recalculate(int x, int y, int m, playingBoard* b) const
+void playingBoard::recalculate(int x, int y, int m)
 {
     auto testIt = [&](int k, int ref, std::vector<int> mask){
         bool test = true;
@@ -57,7 +57,7 @@ void playingBoard::recalculate(int x, int y, int m, playingBoard* b) const
                 test = false;
                 break;
             }
-            int val = b->get(x1,y1);
+            int val = get(x1,y1);
             switch(mask[i]){
                 case 1 :
                     if(tempVal == -1) tempVal = val ? val : -1;
@@ -89,7 +89,7 @@ void playingBoard::recalculate(int x, int y, int m, playingBoard* b) const
                 test = false;
                 break;
             }
-            int val = b->get(x1,y1);
+            int val = get(x1,y1);
             switch(mask[i]){
                 case 1 :
                     if(tempVal == -1) tempVal = val ? val : -1;
@@ -114,29 +114,29 @@ void playingBoard::recalculate(int x, int y, int m, playingBoard* b) const
 
     if(priority.find(mp(x,y)) == priority.end()){
         std::vector<double> temp(4,0);
-        b->priority[mp(x,y)] = temp;
+        priority[mp(x,y)] = temp;
     }
     bool found = false;
-    b->priority[mp(x,y)][m] = 0;
-    for(fieldWeight& test : b->knowledge){
+    priority[mp(x,y)][m] = 0;
+    for(fieldWeight& test : knowledge){
         for(int& ref : test.index.extra)
             if(testIt(m, ref, test.mask)){
                 found = true;
-                b->priority[mp(x,y)][m] = test.points * 2;
+                priority[mp(x,y)][m] = test.points * 2;
                 break;
             }
          if(found) break;
          for(int& ref : test.index.half)
              if(testIt(m, ref, test.mask)){
                  found = true;
-                 b->priority[mp(x,y)][m] = (double)test.points / 2;
+                 priority[mp(x,y)][m] = (double)test.points / 2;
                  break;
              }
           if(found) break;
           for(int& ref : test.index.normal)
               if(testIt(m, ref, test.mask)){
                   found = true;
-                  b->priority[mp(x,y)][m] = test.points;
+                  priority[mp(x,y)][m] = test.points;
                   break;
               }
            if(found) break;
@@ -161,10 +161,10 @@ playingBoard::playingBoard(int w, int h, std::string path) : height(h), width(w)
             for(uint j = 0; j < node[typeName]["moves"][i].size(); j++){
                 tempMask.push_back(node[typeName]["moves"][i][j].as<int>());
                 switch(tempMask[j]){
-                case -3 :
+                case -1 :
                     tempIndex.neg.push_back(j);
                     break;
-                case -1 :
+                case -3 :
                     tempIndex.half.push_back(j);
                     break;
                 case 0 :
@@ -202,9 +202,9 @@ bool playingBoard::set(int x, int y, int who){
             int x2 = x - k*move[2*i];
             int y2 = y - k*move[2*i+1];
             if(x1 > -1 && y1 > -1 && x1 < 26 && y2 < 26)
-                if (get(x1, y1) == 0) recalculate(x1, y1, i, this);
+                if (get(x1, y1) == 0) recalculate(x1, y1, i);
             if(x2 > -1 && y2 > -1 && x2 < 26 && y2 < 26)
-                if (get(x2, y2) == 0) recalculate(x2, y2, i, this);
+                if (get(x2, y2) == 0) recalculate(x2, y2, i);
         }
 
     return true;

@@ -39,10 +39,10 @@ private:
     std::vector<fieldWeight> knowledge;
 
     bool checkForWin(int x, int y);
-    void recalculate(int x, int y, int m, playingBoard* b) const;
+    void recalculate(int x, int y, int m);
 public:
     boardState win;
-    playingBoard(int w, int h, std::__cxx11::string path);
+    playingBoard(int w, int h, std::string path);
     ~playingBoard();
 
     bool set(int x, int y, int who);
