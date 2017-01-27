@@ -63,13 +63,13 @@ void playingBoard::recalculate(int x, int y, int m)
                     if(tempVal == -1) tempVal = val ? val : -1;
                     if(val != tempVal) test = false;
                     break;
-                case -3 :
+                case -1 :
                     if(val != 0){
                         if(tempVal == -1) tempVal = val == 1 ? 2 : 1;
                         else if(val == tempVal) test = false;
                     }
                     break;
-                case -1 :
+                case -3 :
                 case 0 :
                 case 3 :
                     if(val != 0) test = false;
